@@ -8,8 +8,9 @@
   let mangaData = null;
 
   $:{
-    if(backupData != null)
+    if(backupData != null) {
       years = getYears(backupData);
+    }
   }
 
   $: {

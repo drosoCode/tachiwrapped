@@ -1,9 +1,9 @@
 <script>
-    import { printStats } from "../lib/stats";
+    import { getStats } from "../lib/stats";
     export let mangaData;
-    
+
     $: {
-        console.log(printStats(mangaData));
+        console.log(getStats(mangaData));
     }
 </script>
 
