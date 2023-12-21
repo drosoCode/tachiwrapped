@@ -26,6 +26,19 @@ function getNumber(num) {
     return new Long(num.low, num.high, num.unsigned).toNumber();
 }
 
+export function getYears(bak) {
+    const years = new Set();
+    bak.backupManga.forEach(m => {
+        m.chapters.forEach(c => {
+            years.add(new Date(getNumber(c.dateFetch)).getFullYear());
+        });
+        m.history?.forEach(h => {
+            years.add(new Date(getNumber(h.lastRead)).getFullYear());
+        })
+    });
+    return [...years].sort((a,b) => (a-b));
+}
+
 export function getMangaData(bak, year) {
     var m = {};
     var timePerChapter = [];
@@ -38,8 +51,10 @@ export function getMangaData(bak, year) {
             "author": e.author,
             "byMonth": [], // computed data by month
             "historyToDate": {}, 
-            "minChapter": 0,
-            "maxChapter": 0,
+            "minChapter": -1,
+            "maxChapter": -1,
+            "minDate": null,
+            "maxDate": null,
             "upToDate": false
         }
         for(let i = 0; i<12; i++) {
@@ -73,7 +88,8 @@ export function getMangaData(bak, year) {
         var lastReadChapter = 0;
         var firstReadChapter = -1;
         e.chapters.sort((a, b) => a.chapterNumber - b.chapterNumber).forEach(c => {
-            const dlThisYear = c.read && new Date(getNumber(c.dateFetch)).getFullYear() == year;
+            const date = new Date(getNumber(c.dateFetch));
+            const dlThisYear = c.read && date.getFullYear() == year;
             if(dlThisYear) {
                 // if chapter was downloaded and read this year, count it
                 if(c.url in m[e.title]["historyToDate"]) {
@@ -83,22 +99,28 @@ export function getMangaData(bak, year) {
                     m[e.title]["byMonth"][month]["chapters"]++;
                     m[e.title]["byMonth"][month]["nbMissingTime"]++;
                 }
+
+                if(m[e.title]["minDate"] == null)
+                    m[e.title]["minDate"] = date;
+                m[e.title]["maxDate"] = date;
+            } else if(c.url in m[e.title]["historyToDate"]) {
+                if(m[e.title]["minDate"] == null)
+                    m[e.title]["minDate"] = m[e.title]["historyToDate"][c.url];
+                m[e.title]["maxDate"] = m[e.title]["historyToDate"][c.url];
             }
+
             if(dlThisYear || c.url in m[e.title]["historyToDate"]) {
-                if(firstReadChapter == -1)
-                    firstReadChapter = c.chapterNumber;
-                lastReadChapter = c.chapterNumber;
+                if(m[e.title]["minChapter"] == -1)
+                    m[e.title]["minChapter"] = c.chapterNumber;
+                m[e.title]["maxChapter"] = c.chapterNumber;
             }
             lastChapter = c.chapterNumber;
         })
         m[e.title]["upToDate"] = lastChapter == lastReadChapter;
-        m[e.title]["minChapter"] = firstReadChapter;
-        m[e.title]["maxChapter"] = lastChapter;
     });
 
     // once we have enough data to get the average reading time, fix missing time 
     const f = !CUSTOM_TIME_FACTOR && timePerChapter.length > 0 ? avg(timePerChapter) : CUSTOM_TIME_FACTOR_VAL;
-    console.log(f);
     for(const k of Object.keys(m)) {
         for(let i = 0; i<12; i++) {
             m[k]["byMonth"][i]["time"] += m[k]["byMonth"][i]["nbMissingTime"]*f;
@@ -109,6 +131,8 @@ export function getMangaData(bak, year) {
 }
 
 export function printStats(data) {
+    const stats = {};
+
     var time = 0;
     var chapters = 0;
     var nb = 0;
@@ -140,4 +164,5 @@ export function printStats(data) {
         mangas lus de 0 à 100
         manga lu le plus vite (ex: un seul mois)
     */
+   return stats;
 }

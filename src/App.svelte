@@ -1,51 +1,37 @@
 <script>
-    import { decodeBackup } from "./lib/tachiyomi_pb";
-    import { getMangaData, printStats } from "./lib/stats";
-    let input;
-    let backupData;
+  import { getMangaData, getYears } from "./lib/stats";
+  import FileUpload from "./components/FileUpload.svelte"; 
+  import Wrapped from "./components/Wrapped.svelte";
+  let backupData = null;
+  let years = [new Date().getFullYear()];
+  let selectedYear = null;
+  let mangaData = null;
 
-    function onUploadChange() {
-      const file = input.files[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.addEventListener("load", async function () {
-          const ds = new DecompressionStream("gzip");
-          const writer = ds.writable.getWriter();
-          writer.write(reader.result);
-          writer.close();
-          const output = [];
-          const reader2 = ds.readable.getReader();
-          let totalSize = 0;
-          while (true) {
-              const { value, done } = await reader2.read();
-              if (done) break;
-              output.push(value);
-              totalSize += value.byteLength;
-          }
-          const concatenated = new Uint8Array(totalSize);
-          let offset = 0;
-          for (const array of output) {
-              concatenated.set(array, offset);
-              offset += array.byteLength;
-          }
+  $:{
+    if(backupData != null)
+      years = getYears(backupData);
+  }
 
-          backupData = decodeBackup(concatenated);
-          showData();
-        });
-        reader.readAsArrayBuffer(file);
-        return;
-      }
-    }
-
-    function showData() {
-        console.log(backupData);
-        const data = getMangaData(backupData, 2023);
-        console.log(data);
-        printStats(data);
-    }
-  
+  $: {
+    if(selectedYear != null)
+      mangaData = getMangaData(backupData, selectedYear);
+  }
 </script>
-  
- <main>
-    <input type="file" accept=".proto.gz" on:change={onUploadChange} bind:this={input} />
+
+<main>
+    {#if backupData == null}
+      <FileUpload bind:backupData/>
+    {:else}
+      <select bind:value={selectedYear}>
+        {#each years as y}
+          <option value={y}>
+            {y}
+          </option>
+        {/each}
+      </select>
+      <br/>
+      {#if mangaData != null}
+        <Wrapped mangaData={mangaData}/>
+      {/if}
+    {/if}
 </main>
