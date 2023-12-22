@@ -1,13 +1,11 @@
 <script>
     import { Duration } from "luxon";
     import { getStats } from "../lib/stats";
-    import { Chart, CategoryScale, LinearScale, PointElement, Tooltip, BarElement, BarController} from "chart.js";
-    import { onMount } from 'svelte';
+    import Chart from "./Chart.svelte";
 
     export let mangaData;
     export let sources;
     let stats = null;
-    let chartCanvas;
 
     let authorsByNb = [];
     let authorsByChap = [];
@@ -32,46 +30,14 @@
         fullyRead = Object.entries(stats.fullyRead).sort((a,b) => (b[1] - a[1]));
         fastestRead = Object.entries(stats.fastestRead).sort((a,b) => (a[1] - b[1])).slice(0,2);
         mostActiveMonth = Object.entries(stats.byMonth).sort((a,b) => (b[1].time - a[1].time))[0];
-
     }
 
-    onMount(()=> {
-        Chart.register(CategoryScale, LinearScale, BarElement, BarController, PointElement, Tooltip);
-        let ctx = chartCanvas.getContext('2d');
-		new Chart(ctx, {
-				type: 'bar',
-				data: {
-                    labels: months,
-                    datasets: [{
-                        label: 'Chapters',
-                        backgroundColor: '#00FFFF',
-                        borderColor: '#00FFFF',
-                        data: stats.byMonth.map(x => x.chapters),
-                    }]
-				},
-                options: {
-                    responsive: true,
-                    plugins: {
-                        legend: {
-                            position: 'top',
-                        },
-                        tooltip: {
-                            enabled: true,
-                            callbacks: {
-                                label: function(context) {
-                                    const data = stats.byMonth[context.dataIndex];
-                                    return "Chapters: "+data.chapters+" Time: "+Duration.fromMillis(data.time, {}).toFormat("h")+"h";
-                                }
-                            }
-                        }
-                    }
-                }
-		});
-      })
-
-
     const formatTime = (t) => {
-        return (Duration.fromMillis(t, {}).toFormat("d,h;mm")+"min").replace(",", "d ").replace(";", "h ");
+        return (Duration.fromMillis(t, {}).toFormat("d,h;mm")+"min").replace(",", "d ").replace(";", "h ").replace("0d ", "");
+    }
+
+    const formatName = (t) => {
+        return t.split(" ").map(x => x.charAt(0).toUpperCase() + x.slice(1)).join(" ");
     }
 </script>
 
@@ -86,27 +52,27 @@
     Par Mangas:
     <ul>
     {#each authorsByNb as an}
-        <li>{an[1].length} titres de {an[0]}: {an[1].join(", ")}</li>
+        <li>{an[1].length} titres de {formatName(an[0])}: {an[1].join(", ")}</li>
     {/each}
     </ul>
     <br/>
     Par Chapitres:
     <ul>
     {#each authorsByChap as ac}
-        <li>{ac[0]}: {ac[1]}</li>
+        <li>{formatName(ac[0])}: {ac[1]}</li>
     {/each}
     </ul>
 
     <br/>
     Vos genres préférés sont:
     {#each genres as g}
-        <li>{g[0]}: {g[1]}</li>
+        <li>{formatName(g[0])}: {g[1]}</li>
     {/each}
 
     <br/>
     Vos sources préférées sont:
     {#each prefSources as s}
-        <li>{sources[s[0]]}: {s[1]}</li>
+        <li>{formatName(sources[s[0]])}: {s[1]}</li>
     {/each}
 
     <br/>
@@ -136,6 +102,6 @@
     Mangas à jours: {Math.round(stats.upToDateMangas/stats.totalMangas*100)}% ({stats.upToDateMangas}/{stats.totalMangas})
     <br/>
     Graphe:
-    <canvas bind:this={chartCanvas} width={400} height={200}></canvas>
+    <Chart byMonth={stats.byMonth} width={400} height={200}/>
 
 </main>
