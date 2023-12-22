@@ -42,7 +42,7 @@ export function getYears(bak) {
 export function getSources(bak) {
     const sources = {};
     bak.backupSources.forEach(m => {
-        sources[m["sourceId"]] = m["name"];
+        sources[getNumber(m["sourceId"])] = m["name"];
     });
     return sources;
 }
@@ -148,6 +148,9 @@ export function getStats(data) {
         "authorsByChapter": {},
         "sources": {},
         "genres": {},
+        "fullyRead": {},
+        "fastestRead": {},
+        "mangas": {}
     };
     for(let i = 0; i<12; i++) {
         stats["byMonth"][i] = {
@@ -173,41 +176,47 @@ export function getStats(data) {
                 else
                     stats["genres"][g] = 1;
             });
-            if(v["author"] in stats["authorsByManga"])
-                stats["authorsByManga"][v["author"]].push(k);
-            else
-                stats["authorsByManga"][v["author"]] = [k];
 
-            if(v["author"] in stats["authorsByChapter"])
-                stats["authorsByChapter"][v["author"]] += sumChap;
+            const author = v["author"]?.replaceAll('"', "").trim().toLowerCase();
+            if(author in stats["authorsByManga"])
+                stats["authorsByManga"][author].push(k);
             else
-                stats["authorsByChapter"][v["author"]] = sumChap;
+                stats["authorsByManga"][author] = [k];
+
+            if(author in stats["authorsByChapter"])
+                stats["authorsByChapter"][author] += sumChap;
+            else
+                stats["authorsByChapter"][author] = sumChap;
 
             if(v["source"] in stats["sources"])
                 stats["sources"][v["source"]]++;
             else
                 stats["sources"][v["source"]] = 1;
-            // console.log(k+ ": "+sumChap+" chapters, "+ Duration.fromMillis(sumTime).toFormat("h:mm").replace(":","h ")+"min, min: "+v["minChapter"]+", max: "+v["maxChapter"]+", upToDate: "+v["upToDate"])
             stats["totalTime"] += sumTime;
             stats["totalChapters"] += sumChap;
             stats["totalMangas"]++;
-            if(v.upToDate)
+            if(v.upToDate) {
                 stats["upToDateMangas"]++;
+                
+                if(v.minChapter < 2) {
+                    stats["fastestRead"][k] = v.maxDate-v.minDate;
+                    stats["fullyRead"][k] = sumChap;
+                }
+            }
+            stats["mangas"][k] = sumChap;
         }
     }
 
-    //stats["totalTimeStr"] = Duration.fromMillis(stats["totalTime"]).toFormat("d,h;mm")+"min".replace(",", "d ").replace(";", "h ")
-
     /*
-        [ok] auteur prefs
-        [ok] 5 genres les + présents
-        [ok] 5 sources les + présentes
-        5 mangas les + lus
-        [ok] graphe du nb chapitre par mois
-        mois le plus actif
-        [ok] pourcentage à jour/en cours
-        mangas lus de 0 à 100
-        manga lu le plus vite (ex: un seul mois)
+        [x] auteur prefs
+        [x] 5 genres les + présents
+        [x] 5 sources les + présentes
+        [x] 5 mangas les + lus
+        [x] graphe du nb chapitre par mois
+        [x] mois le plus actif
+        [x] pourcentage à jour/en cours
+        [x] mangas lus de 0 à 100
+        [x] manga lu le plus vite (ex: un seul mois)
     */
    return stats;
 }

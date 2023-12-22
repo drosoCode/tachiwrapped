@@ -34,13 +34,6 @@
         return;
       }
     }
-
-    /*function showData() {
-        console.log(backupData);
-        const data = getMangaData(backupData, 2023);
-        console.log(data);
-        printStats(data);
-    }*/
   </script>
   
 <main>

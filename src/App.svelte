@@ -1,21 +1,24 @@
 <script>
-  import { getMangaData, getYears } from "./lib/stats";
+  import { getMangaData, getSources, getYears } from "./lib/stats";
   import FileUpload from "./components/FileUpload.svelte"; 
   import Wrapped from "./components/Wrapped.svelte";
   let backupData = null;
   let years = [new Date().getFullYear()];
+  let sources = {};
   let selectedYear = null;
   let mangaData = null;
 
   $:{
     if(backupData != null) {
       years = getYears(backupData);
+      sources = getSources(backupData);
     }
   }
 
   $: {
-    if(selectedYear != null)
+    if(selectedYear != null) {
       mangaData = getMangaData(backupData, selectedYear);
+    }
   }
 </script>
 
@@ -32,7 +35,7 @@
       </select>
       <br/>
       {#if mangaData != null}
-        <Wrapped mangaData={mangaData}/>
+        <Wrapped mangaData={mangaData} sources={sources}/>
       {/if}
     {/if}
 </main>
