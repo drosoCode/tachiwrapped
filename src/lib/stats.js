@@ -1,4 +1,3 @@
-import { Duration } from "luxon";
 import Long from "long"
 
 const TIME_FILTER = 2000; // exclude reading time of less than 2 sec (unreliable)
