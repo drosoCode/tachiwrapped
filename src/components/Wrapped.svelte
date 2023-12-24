@@ -2,6 +2,9 @@
     import { Duration } from "luxon";
     import { getStats } from "../lib/stats";
     import Chart from "./Chart.svelte";
+    import { mdiBook, mdiBookOpenPageVariant, mdiClockTimeEight } from '@mdi/js';
+    import AnimatedNumber from "./AnimatedNumber.svelte";
+  import ContentCard from "./ContentCard.svelte";
 
     export let mangaData;
     export let sources;
@@ -41,11 +44,12 @@
     }
 </script>
 
-<main>
-    Chapitres Lus: {stats.totalChapters} pour {stats.totalMangas} titres
-    <br/>
-    Temps Total: {formatTime(stats.totalTime)}
-    <br/>
+<main class="">
+    <div class="flex flex-row flex-wrap justify-around">
+        <AnimatedNumber value={stats.totalChapters} icon={mdiBookOpenPageVariant} cardCls={"bg-orange-600 w-96 mb-4"} iconCls={"text-amber-100"} title={"Total Chapters"}/>
+        <AnimatedNumber value={stats.totalMangas} icon={mdiBook} cardCls={"bg-teal-600 w-96 mb-4"} iconCls={"text-amber-100"} title={"Total Mangas"}/>
+        <ContentCard value={formatTime(stats.totalTime)} icon={mdiClockTimeEight} cardCls={"bg-cyan-600 w-96 mb-4"} iconCls={"text-amber-100"} title={"Total Time"}/>
+    </div>
 
     Vos auteurs les plus lus sont:
     <br/>

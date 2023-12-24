@@ -17,6 +17,8 @@
     "vite": "^5.0.8"
   },
   "dependencies": {
+    "@jamescoyle/svelte-icon": "^0.1.1",
+    "@mdi/js": "^7.3.67",
     "chart.js": "^4.4.1",
     "long": "^5.2.3",
     "luxon": "^3.4.4"

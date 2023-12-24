@@ -1,8 +1,10 @@
 <script>
   import { decodeBackup } from "../lib/tachiyomi_pb";
+  import { createEventDispatcher } from 'svelte';
   export let backupData;
   export let name;
   export let cls;
+	const dispatch = createEventDispatcher();
   let input;
 
   function onUploadChange() {
@@ -31,6 +33,7 @@
         }
 
         backupData = decodeBackup(concatenated);
+        dispatch('upload');
       });
       reader.readAsArrayBuffer(file);
       return;

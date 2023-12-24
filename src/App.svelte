@@ -3,17 +3,20 @@
   import FileUpload from "./components/FileUpload.svelte";
   import Wrapped from "./components/Wrapped.svelte";
   import Header from "./components/Header.svelte"
-  let showAbout = false;
+  let page = 0;
   let backupData = null;
   let years = [new Date().getFullYear()];
   let sources = {};
-  let selectedYear = null;
+  let selectedYear;
+  let selectDefault = null;
   let mangaData = null;
 
-  $: {
+  const onUpload = () => {
     if (backupData != null) {
       years = getYears(backupData);
       sources = getSources(backupData);
+      selectDefault = years[years.length-1];
+      page = 2;
     }
   }
 
@@ -24,45 +27,34 @@
   }
 </script>
 
-<main class="text-center h-screen bg-gradient-to-r from-violet-500 to-fuchsia-500">
+<main class="text-center bg-gradient-to-r from-violet-500 to-fuchsia-500">
   <div class="md:px-52 h-full backdrop-brightness-75">
-  {#if backupData == null && !showAbout}
-    <div class="flex flex-col justify-around h-full">
-      <Header/>
-
-      <div>
-        <p class="font-semibold mb-10 text-amber-100">
-          Discover your year's retrospective<br/>on Tachiyomi !
-        </p>
-        <FileUpload bind:backupData name={"Select a Backup"} cls="mb-16"/>
-
-        <h6 class="text-sm mt-7 text-amber-100">
-          To create one, go into
-          <br />
-          Settings > Backup And Restore > Create a Backup
-        </h6>
-      </div>
-
-      <a class="text-sm text-amber-100 mt-7 underline justify-end cursor-pointer" on:click={() => {showAbout = true;}}>
-        About this project
-      </a>
+  {#if backupData != null && page == 2}
+    <div>
+      <header class="py-12">
+        <h1 class="text-amber-100 font-semibold text-xl">This is your retrospective for</h1>
+        <div>
+          <span class="text-amber-100 font-semibold mr-2 text-xl">the year of</span>
+          <select bind:value={selectedYear} class="text-sm py-2 px-4 rounded-md font-semibold bg-pink-50 text-pink-700 hover:bg-pink-100">
+            {#each years as y}
+              <option value={y} selected={selectDefault == y}>
+                {y}
+              </option>
+            {/each}
+          </select>
+        </div>
+      </header>
+      <br />
+      {#if mangaData != null}
+        <Wrapped {mangaData} {sources} />
+      {/if}
+      <button class="text-sm text-amber-100 mt-7 underline justify-end cursor-pointer" on:click={() => {page = 0;}}>
+        Back to Home
+      </button>
     </div>
-  {:else if backupData != null}
-    <select bind:value={selectedYear}>
-      {#each years as y}
-        <option value={y}>
-          {y}
-        </option>
-      {/each}
-    </select>
-    <br />
-    {#if mangaData != null}
-      <Wrapped {mangaData} {sources} />
-    {/if}
-  {:else}
-    <div class="flex flex-col justify-around h-full">
+  {:else if page == 1}
+    <div class="flex flex-col justify-around h-screen">
       <Header/>
-
       <div class="text-amber-100">
         <p class="font-semibold mb-10">
           This is a little side-project to create a personnal recap of the year based on <a href="https://github.com/tachiyomiorg/tachiyomi" class="underline" target="_blank">Tachiyomi</a>'s backup data.
@@ -74,7 +66,6 @@
           Protobuf definition and stubs generated using <a href="https://github.com/clementd64/tachiyomi-backup-models" class="underline" target="_blank">tachiyomi-backup-models</a> and <a href="https://github.com/evanw/pbjs" class="underline" target="_blank">pbjs</a>.
           <br/><br/>
         </p>
-
         <div>
           <h1 class="font-semibold">Why is my read chapter number so high ?</h1>
           <p class="font-light">
@@ -82,10 +73,30 @@
           </p>
         </div>
       </div>
-
-      <a class="text-sm text-amber-100 mt-7 underline justify-end cursor-pointer" on:click={() => {showAbout = false;}}>
+      <button class="text-sm text-amber-100 mt-7 underline justify-end cursor-pointer" on:click={() => {page = 0;}}>
         Back to Home
-      </a>
+      </button>
+    </div>
+  {:else}
+    <div class="flex flex-col justify-around h-screen">
+      <Header/>
+
+      <div>
+        <p class="font-semibold mb-10 text-amber-100">
+          Discover your year's retrospective<br/>on Tachiyomi !
+        </p>
+        <FileUpload bind:backupData name={"Select a Backup"} cls="mb-16" on:upload={onUpload}/>
+
+        <h6 class="text-sm mt-7 text-amber-100">
+          To create one, go into
+          <br />
+          Settings > Backup And Restore > Create a Backup
+        </h6>
+      </div>
+
+      <button class="text-sm text-amber-100 mt-7 underline justify-end cursor-pointer" on:click={() => {page = 1;}}>
+        About this project
+      </button>
     </div>
   {/if}
   </div>
