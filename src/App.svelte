@@ -48,7 +48,7 @@
       {#if mangaData != null}
         <Wrapped {mangaData} {sources} />
       {/if}
-      <button class="text-sm text-amber-100 mt-7 underline justify-end cursor-pointer" on:click={() => {page = 0;}}>
+      <button class="text-sm text-amber-100 mt-7 underline justify-end cursor-pointer mb-6" on:click={() => {page = 0;}}>
         Back to Home
       </button>
     </div>

@@ -5,6 +5,8 @@
     export let byMonth;
     export let width;
     export let height;
+    export let chartColor = "#4172bf";
+    export let textColor = "#fff";
     let chartCanvas;
     const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
@@ -17,17 +19,14 @@
                     labels: months,
                     datasets: [{
                         label: 'Chapters',
-                        backgroundColor: '#00FFFF',
-                        borderColor: '#00FFFF',
+                        backgroundColor: chartColor,
+                        borderColor: chartColor,
                         data: byMonth.map(x => x.chapters),
                     }]
 				},
                 options: {
                     responsive: true,
                     plugins: {
-                        legend: {
-                            position: 'top',
-                        },
                         tooltip: {
                             enabled: true,
                             callbacks: {
@@ -36,6 +35,20 @@
                                     return "Chapters: "+data.chapters+" Time: "+Duration.fromMillis(data.time, {}).toFormat("h")+"h";
                                 }
                             }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            ticks: { color: textColor }
+                        },
+                        x: {
+                            ticks: { color: textColor }
+                        }
+                    },
+                    animations: {
+                        tension: {
+                            duration: 5000,
+                            easing: 'easeInOutQuart',
                         }
                     }
                 }

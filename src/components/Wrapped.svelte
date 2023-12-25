@@ -4,7 +4,9 @@
     import Chart from "./Chart.svelte";
     import { mdiBook, mdiBookOpenPageVariant, mdiClockTimeEight } from '@mdi/js';
     import AnimatedNumber from "./AnimatedNumber.svelte";
-  import ContentCard from "./ContentCard.svelte";
+    import ContentCard from "./ContentCard.svelte";
+    import AnimatedList from "./AnimatedList.svelte";
+    import MangaCard from "./MangaCard.svelte";
 
     export let mangaData;
     export let sources;
@@ -46,66 +48,57 @@
 
 <main class="">
     <div class="flex flex-row flex-wrap justify-around">
-        <AnimatedNumber value={stats.totalChapters} icon={mdiBookOpenPageVariant} cardCls={"bg-orange-600 w-96 mb-4"} iconCls={"text-amber-100"} title={"Total Chapters"}/>
-        <AnimatedNumber value={stats.totalMangas} icon={mdiBook} cardCls={"bg-teal-600 w-96 mb-4"} iconCls={"text-amber-100"} title={"Total Mangas"}/>
-        <ContentCard value={formatTime(stats.totalTime)} icon={mdiClockTimeEight} cardCls={"bg-cyan-600 w-96 mb-4"} iconCls={"text-amber-100"} title={"Total Time"}/>
+        <AnimatedNumber value={stats.totalChapters} icon={mdiBookOpenPageVariant} cardCls={"bg-gradient-to-br from-orange-600 to-orange-400 w-96 mb-4"} iconCls={"text-amber-100"} title={"Total Chapters"}/>
+        <AnimatedNumber value={stats.totalMangas} icon={mdiBook} cardCls={"bg-gradient-to-br from-teal-600 to-teal-400 w-96 mb-4"} iconCls={"text-amber-100"} title={"Total Mangas"}/>
+        <ContentCard value={formatTime(stats.totalTime)} icon={mdiClockTimeEight} cardCls={"bg-gradient-to-br from-cyan-600 to-cyan-400 w-96 mb-4"} iconCls={"text-amber-100"} title={"Total Time"}/>
+        <ContentCard value={months[mostActiveMonth[0]]} icon={mdiClockTimeEight} cardCls={"bg-gradient-to-br from-cyan-600 to-cyan-400 w-96 mb-4"} iconCls={"text-amber-100"} title={"Most Active Month"}/>
+        <ContentCard value={Math.round(stats.upToDateMangas/stats.totalMangas*100)+"% ("+stats.upToDateMangas+"/"+stats.totalMangas+")"} icon={mdiClockTimeEight} cardCls={"bg-gradient-to-br from-cyan-600 to-cyan-400 w-96 mb-4"} iconCls={"text-amber-100"} title={"Up To Date Mangas"}/>
+        <AnimatedNumber value={fullyRead.length} icon={mdiClockTimeEight} cardCls={"bg-gradient-to-br from-cyan-600 to-cyan-400 w-96 mb-4"} iconCls={"text-amber-100"} title={"Fully Read Mangas"}/>
     </div>
 
-    Vos auteurs les plus lus sont:
-    <br/>
-    Par Mangas:
-    <ul>
-    {#each authorsByNb as an}
-        <li>{an[1].length} titres de {formatName(an[0])}: {an[1].join(", ")}</li>
-    {/each}
-    </ul>
-    <br/>
-    Par Chapitres:
-    <ul>
-    {#each authorsByChap as ac}
-        <li>{formatName(ac[0])}: {ac[1]}</li>
-    {/each}
-    </ul>
+    {#if authorsByChap.length > 0}
+        <div class="mt-10">
+            <h1 class="text-amber-100 font-semibold text-2xl mb-5">Your preferred authors are</h1>
+            <AnimatedList items={authorsByChap.map((x, i) => (i+1)+". "+formatName(x[0])+" ("+x[1]+")")}/>
+        </div>
+    {/if}
 
-    <br/>
-    Vos genres préférés sont:
-    {#each genres as g}
-        <li>{formatName(g[0])}: {g[1]}</li>
-    {/each}
 
-    <br/>
-    Vos sources préférées sont:
-    {#each prefSources as s}
-        <li>{formatName(sources[s[0]])}: {s[1]}</li>
-    {/each}
+    {#if authorsByNb.length > 0}
+        <div class="mt-10">
+            <h1 class="text-amber-100 font-semibold text-2xl mb-5">You've read multiple titles from these authors</h1>
+            <AnimatedList items={authorsByNb.map((x) => x[1].length+" from "+formatName(x[0])+": "+x[1].join(", "))}/>
+        </div>
+    {/if}
 
-    <br/>
-    Vos mangas les plus lus sont:
-    {#each mostRead as m}
-        <li>
-            {m[0]}: {m[1]}
-            <img src={mangaData[m[0]].image}/>
-        </li>
-    {/each}
+    <div class="mt-10">
+        <h1 class="text-amber-100 font-semibold text-2xl mb-5">This year, you've liked a lot these categories</h1>
+        <AnimatedList items={genres.map((x) => formatName(x[0]))}/>
+    </div>
 
-    <br/>
-    Les mangas lus entièrement cette année:
-    {#each fullyRead as m}
-        <li>{m[0]}: {m[1]}</li>
-    {/each}
+    
+    <div class="mt-10">
+        <h1 class="text-amber-100 font-semibold text-2xl mb-5">Your most used sources are</h1>
+        <AnimatedList items={prefSources.map((x) => formatName(sources[x[0]]))}/>
+    </div>
 
-    <br/>
-    Mangas lus les plus rapidement:
-    {#each fastestRead as m}
-        <li>{m[0]}</li>
-    {/each}
+    <div class="mt-10">
+        <h1 class="text-amber-100 font-semibold text-2xl mb-5">You've read these mangas in no time !</h1>
+        <AnimatedList items={fastestRead.map((x) => formatName(x[0]))}/>
+    </div>
+    
 
-    <br/>
-    Mois le plus actif: {months[mostActiveMonth[0]]} : {formatTime(mostActiveMonth[1].time)}
-    <br/>
-    Mangas à jours: {Math.round(stats.upToDateMangas/stats.totalMangas*100)}% ({stats.upToDateMangas}/{stats.totalMangas})
-    <br/>
-    Graphe:
-    <Chart byMonth={stats.byMonth} width={400} height={200}/>
+    <div class="mt-10 lg:px-10">
+        <h1 class="text-amber-100 font-semibold text-2xl mb-5">Your preferrend mangas are</h1>
+        <div class="flex flex-row flex-wrap justify-around">
+            {#each mostRead as m}
+                <MangaCard image={mangaData[m[0]].image} name={m[0]} number={m[1]} cardCls={"mb-4"}/>
+            {/each}
+        </div>
+    </div>
 
+    <div class="mt-10">
+        <h1 class="text-amber-100 font-semibold text-2xl mb-5">Here is your reading history</h1>
+        <Chart byMonth={stats.byMonth} width={400} height={200}/>
+    </div>
 </main>

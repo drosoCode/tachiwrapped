@@ -53,7 +53,7 @@ export function getMangaData(bak, year) {
     bak.backupManga.forEach(e => {
         m[e.title] = {// common data
             "totalChapters": e.chapters.length,
-            "genres": e.genre,
+            "genres": e.genre || [],
             "source": getNumber(e.source),
             "image": e.thumbnailUrl,
             "author": e.author,
@@ -206,16 +206,5 @@ export function getStats(data) {
         }
     }
 
-    /*
-        [x] auteur prefs
-        [x] 5 genres les + présents
-        [x] 5 sources les + présentes
-        [x] 5 mangas les + lus
-        [x] graphe du nb chapitre par mois
-        [x] mois le plus actif
-        [x] pourcentage à jour/en cours
-        [x] mangas lus de 0 à 100
-        [x] manga lu le plus vite (ex: un seul mois)
-    */
    return stats;
 }
