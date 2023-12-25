@@ -35,8 +35,8 @@
 <div>
   {#if scrollBtnShow && page == 2}
   <button style="width: 10rem;" class="z-10 fixed bottom-4 inset-x-0 mx-auto inline-flex items-center justify-center p-0.5 mb-2 rounded-lg group bg-gradient-to-br from-green-400 to-blue-600 group-hover:from-green-400 group-hover:to-blue-600 text-white text-sm" on:click={scrollBtnClick}>
-    <span style="width: 9.8rem;" class="px-5 py-2.5 transition-all ease-in duration-75 bg-gray-900 rounded-md group-hover:bg-opacity-0 flex flex-row">
-      <SvgIcon type="mdi" path={mdiArrowDownBoldCircle} size={24} class="mr-2"></SvgIcon>
+    <span style="width: 9.8rem;" class="px-5 py-2.5 transition-all ease-in duration-75 bg-gray-900 rounded-md group-hover:bg-opacity-0 flex flex-row items-center justify-around">
+      <SvgIcon type="mdi" path={mdiArrowDownBoldCircle} size={24}></SvgIcon>
       Scroll Down
     </span>
   </button>
@@ -61,7 +61,7 @@
         </header>
         <br />
         {#if mangaData != null}
-          <Wrapped {mangaData} {sources} bind:scrollBtnShow bind:scrollBtnClick {container} />
+          <Wrapped {mangaData} {sources} bind:scrollBtnShow bind:scrollBtnClick {container} year={selectedYear} />
         {/if}
         <button class="text-sm text-amber-100 mt-7 underline justify-end cursor-pointer mb-6" on:click={() => {page = 0;}}>
           Back to Home

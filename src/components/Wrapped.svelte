@@ -8,11 +8,13 @@
     import AnimatedList from "./AnimatedList.svelte";
     import MangaCard from "./MangaCard.svelte";
     import DoubleAnimatedList from "./DoubleAnimatedList.svelte";
+    import Recap from "./Recap.svelte";
 
     export let mangaData;
     export let sources;
     export let scrollBtnShow;
     export let container;
+    export let year;
     let stats = null;
     let cpt = 0;
     let elements = [];
@@ -26,6 +28,7 @@
     let fastestRead = [];
     let mostActiveMonth = [0, 0];
     let showChart = false;
+    let showRecap = false;
 
     const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
@@ -70,7 +73,7 @@
     }
 
     export const scrollBtnClick = () => {
-        if(cpt > 7) return;
+        if(cpt > 8) return;
         switch(cpt) {
             case 0:
                 scrollElement(0);
@@ -100,9 +103,13 @@
                 scrollElement(6);
                 showChart = true;
             break;
+            case 7:
+                scrollElement(7);
+                showRecap = true;
+            break;
         }
         cpt++;
-        if(cpt == 7)
+        if(cpt == 8)
             scrollBtnShow = false;
     }
 </script>
@@ -155,6 +162,23 @@
         {#if showChart}
             <h1 class="text-amber-100 font-semibold text-2xl mb-5">Here is your reading history</h1>
             <Chart byMonth={stats.byMonth} width={400} height={200}/>
+        {/if}
+    </div>
+
+    <div class="mt-10" bind:this={elements[7]}>
+        {#if showRecap}
+            <h1 class="text-amber-100 font-semibold text-2xl mb-5">This is your recap !</h1>
+            <div class="flex flex-row items-center justify-around">
+                <Recap 
+                    mangaImage={mangaData[mostRead[0][0]].image} 
+                    mangaName={mostRead[0][0]} 
+                    mangas={mostRead.map(x => formatName(x[0])).slice(0,5)}
+                    genres={genres.map(x => formatName(x[0])).slice(0,5)}
+                    totalTime={formatTime(stats.totalTime)}
+                    totalMangas={stats.totalMangas}
+                    year={year}
+                />
+            </div>
         {/if}
     </div>
     
