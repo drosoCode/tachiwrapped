@@ -95,7 +95,7 @@
           <div class="mt-4">
             <h1 class="font-semibold">Why are some images missing ?</h1>
             <p class="font-light">
-              Images are loaded directly using the url provided in the backup, the url may be blocked if some headers are missing (ex: mangahere), or may be invalid (the image shown in tachiyomi is cached, so it still show even if the url to the file is no longer valid).
+              Images are loaded directly using the url provided in the backup, the url may be blocked if some headers are missing (ex: mangahere), or may be invalid (the image shown in tachiyomi is cached, so it is still shown even if the url to the file is no longer valid).
             </p>
           </div>
           <div class="mt-4">
@@ -103,7 +103,7 @@
             <p class="font-light text-sm">
               Total Chapters: the total number of chapters read during the year <br/>
               Total Time: the total time spent reading during the year (based on total chapters) <br/>
-              Total Manga: the number of different mangas read during the year <br/>
+              Total Manga: the number of different mangas where you read at least one chapter during the year <br/>
               Most Active Month: the month where you read the most chapters <br/>
               Up To Date Mangas: Mangas that have their latest chapter marked as read <br/>
               Fully Read Mangas: Mangas were read from first to last chapter exclusively during the year <br/>
