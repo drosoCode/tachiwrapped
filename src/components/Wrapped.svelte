@@ -15,6 +15,7 @@
     export let scrollBtnShow;
     export let container;
     export let year;
+
     let stats = null;
     let cpt = 0;
     let elements = [];
@@ -34,6 +35,10 @@
 
     $: {
         stats = getStats(mangaData);
+        updateUI();
+    }
+
+    const updateUI = () => {
         container.scrollTo({top: 0});
         reset();
         fullyRead = Object.entries(stats.fullyRead).sort((a,b) => (b[1] - a[1]));
@@ -57,6 +62,7 @@
         fastestRead = [];
         cpt = 0;
         showChart = false;
+        showRecap = false;
         scrollBtnShow = true;
     }
 
@@ -181,5 +187,4 @@
             </div>
         {/if}
     </div>
-    
 </main>

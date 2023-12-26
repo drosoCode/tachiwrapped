@@ -43,7 +43,7 @@
   {/if}
 
   <main bind:this={container} class="max-h-screen overflow-y-scroll text-center bg-gradient-to-r from-violet-500 to-fuchsia-500 z-0">
-    <div class="md:px-52 h-full backdrop-brightness-75" style={page == 2 ? "min-height: 200vh;" : ""}>
+    <div class="px-4 md:px-52 h-full backdrop-brightness-75" style={page == 2 ? "min-height: 200vh;" : ""}>
     {#if backupData != null && page == 2}
       <div>
         <header class="py-12">
@@ -63,16 +63,21 @@
         {#if mangaData != null}
           <Wrapped {mangaData} {sources} bind:scrollBtnShow bind:scrollBtnClick {container} year={selectedYear} />
         {/if}
+        <button class="text-sm text-amber-100 mt-7 underline justify-end cursor-pointer mr-6 mb-6" on:click={() => {container.scrollTo({top: 0, behavior: 'smooth'})}}>
+          Go to Top
+        </button>
         <button class="text-sm text-amber-100 mt-7 underline justify-end cursor-pointer mb-6" on:click={() => {page = 0;}}>
           Back to Home
         </button>
       </div>
     {:else if page == 1}
-      <div class="flex flex-col justify-around h-screen">
+      <div>
         <Header/>
-        <div class="text-amber-100">
-          <p class="font-semibold mb-10">
-            This is a little side-project to create a personnal recap of the year based on <a href="https://github.com/tachiyomiorg/tachiyomi" class="underline" target="_blank">Tachiyomi</a>'s backup data.
+        <div class="text-amber-100 mt-10">
+          <p class="font-semibold">
+            This is a little side-project to create a personnal recap of the year based on <a href="https://github.com/tachiyomiorg/tachiyomi" class="underline" target="_blank">Tachiyomi</a>'s backup data. 
+            <br/>
+            It is not affiliated in any way with Tachiyomi.
             <br/><br/>
             Everything is done client-side using the <a href="https://developer.mozilla.org/en-US/docs/Web/API/FileReader" class="underline" target="_blank">FileReader</a> and <a href="https://developer.mozilla.org/en-US/docs/Web/API/DecompressionStream" class="underline" target="_blank">DecompressionStream</a> APIs.
             <br/><br/>
@@ -81,14 +86,37 @@
             Protobuf definition and stubs generated using <a href="https://github.com/clementd64/tachiyomi-backup-models" class="underline" target="_blank">tachiyomi-backup-models</a> and <a href="https://github.com/evanw/pbjs" class="underline" target="_blank">pbjs</a>.
             <br/><br/>
           </p>
-          <div>
+          <div class="mt-6">
             <h1 class="font-semibold">Why is my read chapter number so high ?</h1>
             <p class="font-light">
               Tachiyomi's backup, in theory, contains BackupHistory entries for each chapter read with their associated reading time, but quite often some of these entries are missing. To mitigate this, we also consider as read the chapters that were downloaded and marked as read this year (and count their reading time based on an average of the previously available times), but it may still be quite approximative (especially if you used a lot the "mark as read" feature).
             </p>
           </div>
+          <div class="mt-4">
+            <h1 class="font-semibold">Why are some images missing ?</h1>
+            <p class="font-light">
+              Images are loaded directly using the url provided in the backup, the url may be blocked if some headers are missing (ex: mangahere), or may be invalid (the image shown in tachiyomi is cached, so it still show even if the url to the file is no longer valid).
+            </p>
+          </div>
+          <div class="mt-4">
+            <h1 class="font-semibold">What are these statistics ?</h1>
+            <p class="font-light text-sm">
+              Total Chapters: the total number of chapters read during the year <br/>
+              Total Time: the total time spent reading during the year (based on total chapters) <br/>
+              Total Manga: the number of different mangas read during the year <br/>
+              Most Active Month: the month where you read the most chapters <br/>
+              Up To Date Mangas: Mangas that have their latest chapter marked as read <br/>
+              Fully Read Mangas: Mangas were read from first to last chapter exclusively during the year <br/>
+              Preferred Authors: the authors ranked by the number of read chapters <br/>
+              Categories: genres ranked by the number of read chapters <br/>
+              Sources: sources ranked by the number of read chapters <br/>
+              Read in no time: mangas that were read from first to last chapter in the least of time <br/>
+              Preferred Mangas: mangas ranked by the number of read chapters <br/>
+              Reading History: chart of read chapters by months
+            </p>
+          </div>
         </div>
-        <button class="text-sm text-amber-100 mt-7 underline justify-end cursor-pointer" on:click={() => {page = 0;}}>
+        <button class="text-sm text-amber-100 mt-7 mb-4 underline justify-end cursor-pointer" on:click={() => {page = 0;}}>
           Back to Home
         </button>
       </div>

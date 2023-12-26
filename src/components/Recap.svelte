@@ -12,8 +12,8 @@
 
 <div class="flex flex-col justify-between items-center px-4 py-4 w-72 rounded-lg bg-gradient-to-br from-pink-500 to-orange-400">
     <img 
-        style="height: 10rem; width: 7.4rem; line-height: 300%;"
-        class="rounded-lg w-60 object-fill text-slate-300 font-semibold text-2xl mb-4"
+        style="height: 10rem; width: 7.4rem; line-height: 200%;"
+        class="rounded-lg w-60 object-fill text-slate-300 bg-gray-900 font-semibold text-2xl mb-4"
         src={mangaImage}
         alt={mangaName}
     />

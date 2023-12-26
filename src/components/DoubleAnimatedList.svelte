@@ -3,9 +3,9 @@
     export let items;
     export let duration = 500;
     export let delay = 200;
-    export let itemCls = "text-xl font-semibold px-1 py-2 rounded-md bg-amber-100 mb-4 w-96";
-    export let secItemCls = "ml-10 text-xl font-semibold px-2 py-2 rounded-md bg-amber-100 mb-4 w-96";
-    export let ctCls = "mx-4 flex flex-col items-center";
+    export let itemCls = "text-xl font-semibold px-1 py-2 rounded-md bg-amber-100 mb-4 w-72";
+    export let secItemCls = "ml-14 text-xl font-semibold px-2 py-2 rounded-md bg-amber-100 mb-4 w-72";
+    export let ctCls = "flex flex-col items-center";
 </script>
 
 <ul class={ctCls}>
