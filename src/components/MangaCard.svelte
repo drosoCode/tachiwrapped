@@ -7,7 +7,7 @@
 
 <div class={"relative w-60 bg-neutral-800 rounded-lg shadow "+cardCls} style="height: 23rem;">
     <img 
-        style="height: 23rem;line-height: 1000%;"
+        style="height: 23rem;line-height: 500%;"
         class="rounded-lg w-60 object-fill text-slate-300 font-semibold text-2xl"
         src={image}
         alt={name}
