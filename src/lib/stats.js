@@ -28,7 +28,7 @@ function getNumber(num) {
 export function getYears(bak) {
     const years = new Set();
     bak.backupManga.forEach(m => {
-        m.chapters.forEach(c => {
+        m.chapters?.forEach(c => {
             years.add(new Date(getNumber(c.dateFetch)).getFullYear());
         });
         m.history?.forEach(h => {
@@ -52,7 +52,7 @@ export function getMangaData(bak, year) {
 
     bak.backupManga.forEach(e => {
         m[e.title] = {// common data
-            "totalChapters": e.chapters.length,
+            "totalChapters": e.chapters ? e.chapters.length : 0,
             "genres": e.genre || [],
             "source": getNumber(e.source),
             "image": e.thumbnailUrl,
@@ -93,7 +93,7 @@ export function getMangaData(bak, year) {
         // fix read chapter number        
         var lastKnownHistory = null;
         var lastChapter = 0;
-        e.chapters.sort((a, b) => a.chapterNumber - b.chapterNumber).forEach(c => {
+        e.chapters?.sort((a, b) => a.chapterNumber - b.chapterNumber).forEach(c => {
             const date = new Date(getNumber(c.dateFetch));
             const dlThisYear = c.read && date.getFullYear() == year;
             if(dlThisYear) {
