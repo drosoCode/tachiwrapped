@@ -78,32 +78,36 @@
         setTimeout(s, 300);
     }
 
+    const isValid = (name) => {
+        return name != "" && name != undefined && name != "undefined";
+    }
+
     export const scrollBtnClick = () => {
         if(cpt > 8) return;
         switch(cpt) {
             case 0:
                 scrollElement(0);
-                authorsByChap = Object.entries(stats.authorsByChapter).sort((a,b) => (b[1]-a[1])).slice(0,5);
+                authorsByChap = Object.entries(stats.authorsByChapter).sort((a,b) => (b[1]-a[1])).filter((x) => isValid(x[0])).slice(0,5);
             break;
             case 1:
                 scrollElement(1);
-                authorsByNb = Object.entries(stats.authorsByManga).sort((a,b) => (b[1].length - a[1].length)).filter((x) => (x[1].length > 1)).slice(0,5);
+                authorsByNb = Object.entries(stats.authorsByManga).sort((a,b) => (b[1].length - a[1].length)).filter((x) => isValid(x[0]) && x[1].length > 1).slice(0,5);
             break;
             case 2:
                 scrollElement(2);
-                genres = Object.entries(stats.genres).sort((a,b) => (b[1] - a[1])).slice(0,5);
+                genres = Object.entries(stats.genres).sort((a,b) => (b[1] - a[1])).filter(x => isValid(x[0])).slice(0,5);
             break;
             case 3:
                 scrollElement(3);
-                prefSources = Object.entries(stats.sources).sort((a,b) => (b[1] - a[1])).slice(0,5);
+                prefSources = Object.entries(stats.sources).sort((a,b) => (b[1] - a[1])).filter(x => isValid(x[0])).slice(0,5);
             break;
             case 4:
                 scrollElement(4);
-                fastestRead = Object.entries(stats.fastestRead).sort((a,b) => (a[1] - b[1])).slice(0,2);
+                fastestRead = Object.entries(stats.fastestRead).sort((a,b) => (a[1] - b[1])).filter(x => isValid(x[0])).slice(0,2);
             break;
             case 5:
                 scrollElement(5);
-                mostRead = Object.entries(stats.mangas).sort((a,b) => (b[1] - a[1])).slice(0,6);
+                mostRead = Object.entries(stats.mangas).sort((a,b) => (b[1] - a[1])).filter(x => isValid(x[0])).slice(0,6);
             break;
             case 6:
                 scrollElement(6);
