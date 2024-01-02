@@ -44,7 +44,7 @@
 <main class={cls}>
   <input
     type="file"
-    accept=".proto.gz"
+    accept=".proto.gz,.tachibk"
     id="input_backup"
     on:change={onUploadChange}
     bind:this={input}
